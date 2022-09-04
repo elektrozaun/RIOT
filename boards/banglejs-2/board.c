@@ -80,7 +80,7 @@ void board_init(void)
     gpio_clear(LCD_DISP);
     gpio_init(LCD_EXTCOMIN, GPIO_OUT);
     gpio_clear(LCD_EXTCOMIN);
-    // LCD CS is high active
+    /* LCD CS is high active */
     gpio_init(LCD_CS, GPIO_OUT);
     gpio_clear(LCD_CS);
 
@@ -96,49 +96,49 @@ void board_init(void)
     gpio_init(CHARGE_COMPLETE, GPIO_IN);
 
     gpio_init(SPI_FLASH_CS, GPIO_OUT);
-    // make sure SPI flash is not selected
+    /* make sure SPI flash is not selected */
     gpio_set(SPI_FLASH_CS);
     gpio_init(SPI_FLASH_MISO, GPIO_IN);
 
-    // bring touch controller out of reset
+    /* bring touch controller out of reset */
     gpio_init(TOUCH_RESET, GPIO_OUT);
     gpio_set(TOUCH_RESET);
 
-    // init PWMs
+    /* init PWMs */
     if (pwm_init(PWM_DEV(0), PWM_RIGHT, 1250, 100) > 0) {
-        pwm_set(PWM_DEV(0), 0, 0); // 0% LCD backlight brightness
+        pwm_set(PWM_DEV(0), 0, 0); /* 0% LCD backlight brightness */
         pwm_poweroff(PWM_DEV(0));
     }
 
     if (pwm_init(PWM_DEV(1), PWM_RIGHT, 1250, 100) > 0) {
-        pwm_set(PWM_DEV(1), 0, 50); // 50% duty cylce @ 125kHz for EXTCOM ?
-        //pwm_poweron(PWM_DEV(1));
+        pwm_set(PWM_DEV(1), 0, 50); /* 50% duty cylce @ 125kHz for EXTCOM ? */
+        /* pwm_poweron(PWM_DEV(1)); */
     }
 
     if (pwm_init(PWM_DEV(2), PWM_RIGHT, 1250, 100) > 0) {
-        pwm_set(PWM_DEV(2), 0, 0); // vibration off
+        pwm_set(PWM_DEV(2), 0, 0); /* vibration off */
         pwm_poweroff(PWM_DEV(2));
     }
 
-    // init ADC
-    adc_init(1); // battery voltage monitor
+    /* init ADC */
+    adc_init(1); /* battery voltage monitor */
 }
 
 void board_power_off(void)
 {
     ztimer_sleep(ZTIMER_MSEC, 5);
 
-    // power off peripherals as much as we can
+    /* power off peripherals as much as we can */
     gpio_clear(LCD_DISP);
-    pwm_poweroff(PWM_DEV(0)); // LCD ExtCOM
-    pwm_poweroff(PWM_DEV(1)); // LCD backlight
-    pwm_poweroff(PWM_DEV(2)); // vibration motor
+    pwm_poweroff(PWM_DEV(0)); /* LCD ExtCOM */
+    pwm_poweroff(PWM_DEV(1)); /* LCD backlight */
+    pwm_poweroff(PWM_DEV(2)); /* vibration motor */
     gpio_clear(HRM_PWR);
     gpio_clear(GPS_PWR);
 
-    // keeping touch in reset should lower power usage
+    /* keeping touch in reset should lower power usage */
     gpio_clear(TOUCH_RESET);
 
-    // finally call RIOT's system power off function
+    /* finally call RIOT's system power off function */
     pm_off();
 }

@@ -84,7 +84,7 @@ extern "C" {
 #define GPS_TXD                     GPIO_PIN(0, 30)
 #define GPS_RXD                     GPIO_PIN(0, 31)
 
-#define SPI_FLASH_DEV               SPI_DEV(3)
+#define SPI_FLASH_DEV               SPI_DEV(1)
 #define SPI_FLASH_CS                GPIO_PIN(0, 14)
 #define SPI_FLASH_MISO              GPIO_PIN(0, 13)
 #define SPI_FLASH_MOSI              GPIO_PIN(0, 15)

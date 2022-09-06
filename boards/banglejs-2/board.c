@@ -60,6 +60,12 @@ static mtd_spi_nor_t banglejs2_nor_dev = {
 };
 
 mtd_dev_t *mtd0 = (mtd_dev_t *)&banglejs2_nor_dev;
+
+#ifdef MODULE_VFS_DEFAULT
+#include "vfs_default.h"
+VFS_AUTO_MOUNT(littlefs2, VFS_MTD(banglejs2_nor_dev), VFS_DEFAULT_NVM(0), 0);
+#endif
+
 #endif /* MODULE_MTD */
 
 

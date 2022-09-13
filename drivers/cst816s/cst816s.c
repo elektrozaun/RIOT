@@ -50,7 +50,7 @@ static void _gpio_irq(void *arg)
     }
 }
 
-static void _cst816s_reset(const cst816s_t *dev)
+void cst816s_reset(const cst816s_t *dev)
 {
     /* Reset, sleep durations based on
      * https://github.com/lupyuen/hynitron_i2c_cst0xxse/blob/master/cst0xx_core.c#L1078-L1085 */
@@ -58,6 +58,21 @@ static void _cst816s_reset(const cst816s_t *dev)
     ztimer_sleep(ZTIMER_MSEC, CST816S_RESET_DURATION_LOW_MS);
     gpio_set(dev->params->reset);
     ztimer_sleep(ZTIMER_MSEC, CST816S_RESET_DURATION_HIGH_MS);
+}
+
+/*
+ * put the touch controller in deep sleep mode, reducing power consumption,
+ * needs reset to wake
+ */
+int cst816s_deep_sleep(const cst816s_t *dev)
+{
+    int res;
+
+    i2c_acquire(dev->params->i2c_dev);
+    res = i2c_write_reg(dev->params->i2c_dev, dev->params->i2c_addr, CST816S_POWER_CONTROL_REG, CST816S_PWR_DEEP_SLEEP_CMD, 0);
+    i2c_release(dev->params->i2c_dev);
+
+    return res;
 }
 
 int cst816s_read(const cst816s_t *dev, cst816s_touch_data_t *data)
@@ -84,6 +99,8 @@ int cst816s_read(const cst816s_t *dev, cst816s_touch_data_t *data)
 int cst816s_init(cst816s_t *dev, const cst816s_params_t *params,
                  cst816s_irq_cb_t cb, void *arg)
 {
+    uint8_t buf[10];
+
     assert(dev && params);
     dev->params = params;
     dev->cb = cb;
@@ -91,7 +108,7 @@ int cst816s_init(cst816s_t *dev, const cst816s_params_t *params,
 
     if (gpio_is_valid(dev->params->reset)) {
         gpio_init(dev->params->reset, GPIO_OUT);
-        _cst816s_reset(dev);
+        cst816s_reset(dev);
     }
 
     if (gpio_is_valid(dev->params->irq) && cb) {
@@ -101,6 +118,35 @@ int cst816s_init(cst816s_t *dev, const cst816s_params_t *params,
             return CST816S_ERR_IRQ;
         }
     }
+
+    i2c_acquire(dev->params->i2c_dev);
+
+    i2c_read_reg(dev->params->i2c_dev, dev->params->i2c_addr, 0x15, buf, 0);
+    ztimer_sleep(ZTIMER_USEC, CST816S_INIT_DELAY);
+
+    /* chip ID, vendor ID and firmware version are at consecutive addresses, */
+    /* so read all 3 with one I2C read */
+    i2c_read_regs(dev->params->i2c_dev, dev->params->i2c_addr, CST816S_CHIP_ID_REG, buf, 3, 0);
+    DEBUG("cst816 PID %02x VID %02x FW %02x\n", buf[0], buf[1], buf[2]);
+    ztimer_sleep(ZTIMER_USEC, CST816S_INIT_DELAY);
+
+    if (buf[0] == CHIP_ID_CST816S) {
+      i2c_write_reg(dev->params->i2c_dev, dev->params->i2c_addr, CST816S_AUTO_SLEEP_DIS_REG, CST816S_AUTO_SLEEP_ENABLE, 0);
+    }
+
+    buf[0] = CST816S_MOTION_MASK_EN_DCLICK | CST816S_MOTION_MASK_EN_CON_UD | CST816S_MOTION_MASK_EN_CON_LR;
+    i2c_write_reg(dev->params->i2c_dev, dev->params->i2c_addr, CST816S_MOTION_MASK_REG, buf[0], 0);
+    ztimer_sleep(ZTIMER_USEC, CST816S_INIT_DELAY);
+
+    buf[0] = CST816S_INT_EN_MOTION | CST816S_INT_EN_CHANGE | CST816S_INT_EN_TOUCH;
+    i2c_write_reg(dev->params->i2c_dev, dev->params->i2c_addr, CST816S_INTERRUPT_CONTROL_REG, buf[0], 0);
+    ztimer_sleep(ZTIMER_USEC, CST816S_INIT_DELAY);
+
+    /* read a report once to clear IRQ */
+    i2c_read_regs(dev->params->i2c_dev, dev->params->i2c_addr, 0x00, buf, 9, 0);
+
+    i2c_release(dev->params->i2c_dev);
+
     return CST816S_OK;
     /* The device will not respond until the first touch event */
 }

@@ -153,6 +153,26 @@ int cst816s_init(cst816s_t *dev, const cst816s_params_t *params,
  */
 int cst816s_read(const cst816s_t *dev, cst816s_touch_data_t *data);
 
+/**
+ * @brief   put the cst816s device into deep sleep mode for power saving,
+ * @brief   must be reset to wake
+ *
+ * @param[in]   dev     device descriptor
+ *
+ * @returns             0 on success
+ * @returns             negative on I2C access error
+ */
+int cst816s_deep_sleep(const cst816s_t *dev);
+
+/**
+ * @brief   resets the cst816s device using the reset pin
+ *
+ * @param[in]   dev     device descriptor
+ *
+ * @returns             void
+ */
+void cst816s_reset(const cst816s_t *dev);
+
 #ifdef __cplusplus
 }
 #endif

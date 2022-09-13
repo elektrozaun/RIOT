@@ -70,9 +70,12 @@ VC31
 
 Hynitron CST816S
 	https://wiki.pine64.org/index.php/PineTime#Touch_panel
-	Can write  0x03,0xe5 to turn off
+	https://github.com/InfiniTimeOrg/InfiniTime/blob/develop/src/drivers/Cst816s.cpp
+	Can write 0x03 to 0xa5 to enter standby (low scan freq)
 
 Kionix KX022/KX023
+	KX022
+	pin INT1 -> P1.07
 	https://kionixfs.azureedge.net/en/datasheet/KX023-1025%20Specifications%20Rev%2012.0.pdf
 
 magneto

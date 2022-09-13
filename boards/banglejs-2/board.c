@@ -79,6 +79,8 @@ void board_init(void)
     gpio_init(HRM_PWR, GPIO_OUT);
     gpio_clear(HRM_PWR);
 
+    gpio_init(GPS_RXD, GPIO_OUT);
+    gpio_init(GPS_TXD, GPIO_IN);
     gpio_init(GPS_PWR, GPIO_OUT);
     gpio_clear(GPS_PWR);
 

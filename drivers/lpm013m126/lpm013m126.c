@@ -153,8 +153,6 @@ void lpm013m126_pixmap(const lpm013m126_t *dev, uint16_t x1, uint16_t x2, uint16
     assert(dev);
     assert(color);
 
-    _display_on=1;
-
     lpm013m126_write_8bpp_lines(dev, /*(uint8_t *)*/color, y1, 1+y2-y1);
 }
 

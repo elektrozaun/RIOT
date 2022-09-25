@@ -30,8 +30,6 @@
 #define TRANSER_BUFFER_LINES 18
 static uint8_t transfer_buffer[(TRANSER_BUFFER_LINES * ((LPM013M126_COLUMNS / 2) + 2)) + 3];
 
-static uint8_t _display_on = 0;
-
 
 static int _lpm013m126_write(const lpm013m126_t *dev, uint8_t *buf, int len)
 {
@@ -102,6 +100,7 @@ static int lpm013m126_write_8bpp_lines(const lpm013m126_t *dev, const uint16_t *
 {
     uint8_t *bufp;
     uint8_t *inlines = (uint8_t *)lines;
+    int i, x;
 
     if (cnt > TRANSER_BUFFER_LINES) {
         DEBUG("lpm013m126: write clipped to buffer %d>%d\n", cnt, TRANSER_BUFFER_LINES);
@@ -110,21 +109,23 @@ static int lpm013m126_write_8bpp_lines(const lpm013m126_t *dev, const uint16_t *
 
     DEBUG("l8 %d %d\n", start, cnt);
 
+#if 0
     if (dev->params->spi_mode != SPI_MODE_0)
         DEBUG("w8 mode fail %d\n", dev->params->spi_mode);
     if (dev->params->spi_clk != SPI_CLK_5MHZ)
         DEBUG("w8 clk fail %u != %u\n", dev->params->spi_clk, SPI_CLK_5MHZ);
+#endif
 
     bufp = transfer_buffer;
     *bufp++ = LPM013M126_CMD_UPDATE | (start >> 8);
     *bufp++ = (start & 0xff);
 
-    for (int i=0; i<cnt; i++) {
-        for (int x=0; x<LPM013M126_COLUMNS; x+=2) {
+    for (i=0; i<cnt; i++) {
+        for (x=0; x<LPM013M126_COLUMNS; x+=2) {
            #define P4(x)  ((((x & 0xc0) ? 1 : 0) << 3) | (((x & 0x38) ? 1 : 0) << 2) | (((x & 0x07) ? 1 : 0) << 1))
-           *(bufp+(x/2))=(P4(inlines[(i*LPM013M126_COLUMNS)+x]) << 4) | P4(inlines[(i*LPM013M126_COLUMNS)+x+1]);
+           *(bufp+(x>>1))=(P4(inlines[(i*LPM013M126_COLUMNS)+x]) << 4) | P4(inlines[(i*LPM013M126_COLUMNS)+x+1]);
         }
-        bufp += (LPM013M126_COLUMNS/2);
+        bufp += (LPM013M126_COLUMNS >> 1);
         start++;
         *bufp++ = (start >> 8);
         *bufp++ = (start & 0xff);

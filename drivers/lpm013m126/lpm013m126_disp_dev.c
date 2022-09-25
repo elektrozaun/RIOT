@@ -54,20 +54,15 @@ static void _lpm013m126_map(const disp_dev_t *dev, const disp_dev_area_t *area, 
 static uint16_t _lpm013m126_height(const disp_dev_t *disp_dev)
 {
     (void)disp_dev;
+
     return LPM013M126_DISP_DEV_HEIGHT;
 }
 
 static uint16_t _lpm013m126_width(const disp_dev_t *disp_dev)
 {
-#if 0
-    const lpm013m126_t *dev = (lpm013m126_t *)disp_dev;
-    assert(dev);
-
-    return dev->params->lines;
-#else
     (void)disp_dev;
+
     return LPM013M126_DISP_DEV_WIDTH;
-#endif
 }
 
 static uint8_t _lpm013m126_color_depth(const disp_dev_t *disp_dev)

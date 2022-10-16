@@ -5,6 +5,7 @@ STDIO_MODULES = \
   stdio_native \
   stdio_nimble \
   stdio_null \
+  stdio_nus \
   stdio_rtt \
   stdio_semihosting \
   stdio_uart \

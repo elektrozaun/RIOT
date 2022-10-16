@@ -68,6 +68,8 @@ void shell_lock_checkpoint(char *line_buf, int buf_size);
  */
 bool shell_lock_is_locked(void);
 
+void shell_lock_now(void);
+
 #ifdef MODULE_SHELL_LOCK_AUTO_LOCKING
 /**
  * @brief   Restart the timeout interval before the shell is locked

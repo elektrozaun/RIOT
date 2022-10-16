@@ -183,6 +183,11 @@ bool shell_lock_is_locked(void)
     return _shell_is_locked;
 }
 
+void shell_lock_now(void)
+{
+    _shell_is_locked = true;
+}
+
 void shell_lock_checkpoint(char *line_buf, int buf_size)
 {
     if (_shell_is_locked) {

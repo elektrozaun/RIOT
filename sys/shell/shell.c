@@ -126,7 +126,7 @@ static shell_command_handler_t find_handler(
 static void print_commands(const shell_command_t *entry)
 {
     for (; entry->name != NULL; entry++) {
-        printf("%-20s %s\n", entry->name, entry->desc);
+        printf("%s\t\t%s\n", entry->name, entry->desc);
     }
 }
 
@@ -135,14 +135,14 @@ static void print_commands_xfa(void)
     unsigned n = XFA_LEN(shell_command_t*, shell_commands_xfa);
     for (unsigned i = 0; i < n; i++) {
         const volatile shell_command_t *entry = shell_commands_xfa[i];
-        printf("%-20s %s\n", entry->name, entry->desc);
+        printf("%s\t\t%s\n", entry->name, entry->desc);
     }
 }
 
 static void print_help(const shell_command_t *command_list)
 {
-    puts("Command              Description"
-         "\n---------------------------------------");
+    puts("Command\t\tDescription"
+         "\n---------------------------------");
     if (command_list != NULL) {
         print_commands(command_list);
     }

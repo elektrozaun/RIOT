@@ -197,6 +197,7 @@ void rtc_localtime(uint32_t time, struct tm *t)
 {
     uint32_t y_secs = _is_leap_year(RIOT_EPOCH) ? (366 * DAY) : (365 * DAY);
     unsigned year = RIOT_EPOCH;
+    int isdst;
 
     while (time > y_secs) {
         time -= y_secs;
@@ -204,9 +205,13 @@ void rtc_localtime(uint32_t time, struct tm *t)
         y_secs = _is_leap_year(year) ? (366 * DAY) : (365 * DAY);
     }
 
+    isdst = t->tm_isdst;
     memset(t, 0, sizeof(*t));
     t->tm_sec  = time;
+    if (isdst > 0)
+      t->tm_sec += 60;
     t->tm_year = year - 1900;
+    t->tm_isdst = isdst;
 
     rtc_tm_normalize(t);
 }

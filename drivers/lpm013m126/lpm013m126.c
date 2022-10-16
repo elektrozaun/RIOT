@@ -30,6 +30,7 @@
 #define TRANSER_BUFFER_LINES 18
 static uint8_t transfer_buffer[(TRANSER_BUFFER_LINES * ((LPM013M126_COLUMNS / 2) + 2)) + 3];
 
+// static uint8_t _frame_buffer[LPM013M126_LINES][((LPM013M126_COLUMNS / 2) + 2)) + 3];
 
 static int _lpm013m126_write(const lpm013m126_t *dev, uint8_t *buf, int len)
 {
@@ -122,7 +123,7 @@ static int lpm013m126_write_8bpp_lines(const lpm013m126_t *dev, const uint16_t *
 
     for (i=0; i<cnt; i++) {
         for (x=0; x<LPM013M126_COLUMNS; x+=2) {
-           #define P4(x)  ((((x & 0xc0) ? 1 : 0) << 3) | (((x & 0x38) ? 1 : 0) << 2) | (((x & 0x07) ? 1 : 0) << 1))
+           #define P4(x)  ((((x & 0xc0) > 0) << 3) | (((x & 0x38) > 0) << 2) | (((x & 0x07) > 0) << 1))
            *(bufp+(x>>1))=(P4(inlines[(i*LPM013M126_COLUMNS)+x]) << 4) | P4(inlines[(i*LPM013M126_COLUMNS)+x+1]);
         }
         bufp += (LPM013M126_COLUMNS >> 1);

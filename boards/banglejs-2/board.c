@@ -120,7 +120,6 @@ void board_init(void)
 
     if (pwm_init(PWM_DEV(1), PWM_RIGHT, 1250, 100) > 0) {
         pwm_set(PWM_DEV(1), 0, 50); /* 50% duty cylce @ 125kHz for EXTCOM ? */
-        /* pwm_poweron(PWM_DEV(1)); */
     }
 
     if (pwm_init(PWM_DEV(2), PWM_RIGHT, 1250, 100) > 0) {

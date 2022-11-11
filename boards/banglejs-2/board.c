@@ -98,7 +98,6 @@ void board_init(void)
     gpio_init(MAGN_SDA, GPIO_IN);
     gpio_init(ACCEL_SDA, GPIO_IN);
     gpio_init(ATM_PRESSURE_SDA, GPIO_IN);
-
     gpio_init(BUTTON0, GPIO_IN_PU);
     gpio_init(EXTPOWER_PRESENT, GPIO_IN);
     gpio_init(CHARGE_COMPLETE, GPIO_IN);
@@ -107,7 +106,6 @@ void board_init(void)
     /* make sure SPI flash is not selected */
     gpio_set(SPI_FLASH_CS);
     gpio_init(SPI_FLASH_MISO, GPIO_IN);
-
     /* bring touch controller out of reset */
     gpio_init(TOUCH_RESET, GPIO_OUT);
     gpio_set(TOUCH_RESET);

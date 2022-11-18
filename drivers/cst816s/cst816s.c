@@ -26,7 +26,7 @@
 #include "cst816s.h"
 #include "cst816s_internal.h"
 
-#define ENABLE_DEBUG 0
+#define ENABLE_DEBUG 1
 #include "debug.h"
 
 const char *cst816s_gesture_str[] = {

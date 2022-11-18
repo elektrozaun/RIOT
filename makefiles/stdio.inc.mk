@@ -11,6 +11,7 @@ STDIO_MODULES = \
   stdio_uart \
   stdio_telnet \
   stdio_tinyusb_cdc_acm \
+  stdio_nus \
   #
 
 # select stdio_uart if no other stdio module is slected

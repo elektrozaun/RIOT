@@ -23,6 +23,9 @@
 #include "shell.h"
 #include "msg.h"
 
+#define W5500_PARAM_CS          (GPIO_PIN(0, 27))  // matching gpio on the Feather nrf52840
+#define W5500_PARAM_EVT         (GPIO_PIN(0, 26))  // this connection has to be wired
+
 #define MAIN_QUEUE_SIZE     (8)
 static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 

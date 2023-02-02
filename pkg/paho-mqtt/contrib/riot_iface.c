@@ -23,6 +23,7 @@
 #include "net/ipv4/addr.h"
 #endif
 #include "net/sock/tcp.h"
+#include "net/utils.h"
 #include "paho_mqtt.h"
 #include "MQTTClient.h"
 #include "timex.h"
@@ -124,14 +125,14 @@ int NetworkConnect(Network *n, char *addr_ip, int port)
 
     strncpy(_local_ip, addr_ip, sizeof(_local_ip));
     if (IS_USED(MODULE_IPV4_ADDR) &&
-        ipv4_addr_from_str((ipv4_addr_t *)&remote.addr, _local_ip)) {
+        !netutils_get_ipv4((ipv4_addr_t *)&remote.addr, _local_ip)) {
             remote.port = port;
     }
 
     /* ipvN_addr_from_str modifies input buffer */
     strncpy(_local_ip, addr_ip, sizeof(_local_ip));
     if (IS_USED(MODULE_IPV6_ADDR) && (remote.port == 0)  &&
-        ipv6_addr_from_str((ipv6_addr_t *)&remote.addr, _local_ip)) {
+        !netutils_get_ipv6((ipv6_addr_t *)&remote.addr, (netif_t **)&remote.netif, _local_ip)) {
             remote.port = port;
             remote.family = AF_INET6;
     }
